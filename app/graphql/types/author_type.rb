@@ -14,3 +14,13 @@ class Types::AuthorType < Types::BaseObject
     "#{object.first_name} #{object.last_name}"
   end
 end
+
+class Types::AuthorInputType < GraphQL::Schema::InputObject
+  graphql_name "AuthorInputType"
+  description "The attributes required to create an author."
+
+  argument :first_name, String, required: true
+  argument :last_name, String, required: true
+  argument :dob, GraphQL::Types::ISO8601Date, required: false
+  argument :is_alive, Boolean, required: false
+end
