@@ -34,5 +34,28 @@ module Types
     def authors
       Author.all
     end
+
+    field :login, String, null: false, description: "Logs a user in" do
+      argument :email, String, required: true
+      argument :password, String, required: true
+    end
+
+    def login(email:, password:)
+      if user = User.where(email: email).first.authenticate(password)
+        user.sessions.create.session_key
+      end
+    end
+
+    field :logout, Boolean, null: false, description: "Log a user out"
+
+    def logout
+      Session.where(id: context[:session_id]).destroy_all
+    end
+
+    field :current_user, Types::UserType, null: true, description: "The user logged in."
+
+    def current_user
+      context[:current_user]
+    end
   end
 end
