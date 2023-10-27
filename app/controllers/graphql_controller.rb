@@ -10,10 +10,21 @@ class GraphqlController < ApplicationController
     variables = prepare_variables(params[:variables])
     query = params[:query]
     operation_name = params[:operationName]
+
     context = {
-      # Add arguments to query context.
-      time: Time.now
+
     }
+
+    # Check the user has a valid Authorization header, if so log the user and
+    # add current user to context.
+    session = Session.where(session_key: request.headers['Authorization']).first
+
+    if session
+      context[current_user] = session.user,
+      context[session_id] = session.id
+      Rails.logger.info "Logged in as #{session.user&.email}"
+    end
+
     result = BookshelfSchema.execute(query, variables: variables, context: context, operation_name: operation_name)
     render json: result
   rescue StandardError => e
