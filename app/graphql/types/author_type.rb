@@ -16,7 +16,7 @@ class Types::AuthorType < Types::BaseObject
   end
 
   def errors
-    object.errors.map {|e| {field_name: e.attribute, error: object.errors[e.attribute]}}
+    object.errors.map { |e| { field_name: e.attribute, error: object.errors[e.attribute] } }
   end
 end
 
